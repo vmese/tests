@@ -3,13 +3,13 @@ import pyaudio
 import numpy as np
 
 
-DEVICE_NAME = 'seeed'
+DEVICE_NAME = 'respeakermics'
 SAMPLE_RATE = 48000
-N_CHANNELS = 8
+N_CHANNELS = 2
 FRAMES_PER_BUFFER = 8192
 RUN_DURATION = 10
 
-OUT_FILE = open('/home/pi/test_pyaudio.raw','wb')
+OUT_FILE = open('/home/pi/test_respeakermics_2.raw','wb')
 
 def get_device_ind(pyaudio_instance, device_name):
     """Get audio input device by name"""
@@ -29,7 +29,7 @@ def callback(in_data,
         print('*** pyaudio overflow !')
 
     # get data in right format
-    print('get data in callback')
+    print('get data in callback 2')
     data = np.fromstring(in_data, dtype=np.int16)
     OUT_FILE.write(data.tobytes())
     return (None, 0)
@@ -37,13 +37,17 @@ def callback(in_data,
 
 def run():
 
+    time.sleep(2)
+
     pyaudio_instance = pyaudio.PyAudio()
 
     for device in range(pyaudio_instance.get_device_count()):
         print(f'Available device : {pyaudio_instance.get_device_info_by_index(device)}')
 
+    print(f'open {DEVICE_NAME} - deviceindex = {get_device_ind(pyaudio_instance, DEVICE_NAME)}')
+
     stream = pyaudio_instance.open(
-        SAMPLE_RATE,
+            SAMPLE_RATE,
         N_CHANNELS,
         pyaudio.paInt16,
         input=True,
@@ -59,7 +63,6 @@ def run():
     stream.stop_stream()
     stream.close()
     pyaudio_instance.terminate()
-
 
 if __name__ == "__main__":
     run()

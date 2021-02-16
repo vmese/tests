@@ -1,0 +1,1 @@
+python3 ./test/test_rec_1.py & python3 ./test/test_rec_2.py
